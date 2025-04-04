@@ -1,0 +1,11 @@
+server {{ ntp_servers | first }} iburst  
+pool {{ domain_name }} iburst  
+
+# Стратум указываем выше, чем у DC (обычно DC = 5-7)  
+stratumweight 0  
+driftfile /var/lib/chrony/drift  
+makestep 1.0 3  
+rtcsync  
+keyfile /etc/chrony.keys  
+leapsectz right/UTC  
+logdir /var/log/chrony  

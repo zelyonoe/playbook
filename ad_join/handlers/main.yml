@@ -1,0 +1,9 @@
+- name: Restart SSSD  
+  ansible.builtin.systemd:  
+    name: sssd  
+    state: restarted  
+
+- name: Restart chrony  
+  ansible.builtin.systemd:  
+    name: chronyd  
+    state: restarted 

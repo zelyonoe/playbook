@@ -1,0 +1,5 @@
+additional_packages:  
+  - oddjob  
+  - oddjob-mkhomedir  
+  - authselect  
+  - authselect-compat  

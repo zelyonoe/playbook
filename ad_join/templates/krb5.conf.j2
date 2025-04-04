@@ -1,0 +1,13 @@
+[libdefaults]  
+default_realm = {{ domain_name | upper }}  
+rdns = false  
+
+[realms]  
+{{ domain_name | upper }} = {  
+  kdc = {{ domain_name }}  
+  admin_server = {{ domain_name }}  
+}  
+
+[domain_realm]  
+.{{ domain_name }} = {{ domain_name | upper }}  
+{{ domain_name }} = {{ domain_name | upper }}  

@@ -1,0 +1,51 @@
+- name: Установка пакетов (в зависимости от ОС)  
+  block:  
+    - name: Для Debian/Ubuntu  
+      ansible.builtin.apt:  
+        name: "{{ realm_packages + additional_packages }}"  
+        state: present  
+        update_cache: yes  
+      when: ansible_facts['os_family'] == 'Debian'  
+
+    - name: Для RHEL/CentOS  
+      ansible.builtin.yum:  
+        name: "{{ realm_packages + additional_packages }}"  
+        state: present  
+      when: ansible_facts['os_family'] == 'RedHat'  
+
+  become: yes  
+
+- name: Настройка Kerberos  
+  ansible.builtin.template:  
+    src: krb5.conf.j2  
+    dest: /etc/krb5.conf  
+    mode: 0644  
+
+- name: Вход в домен  
+  ansible.builtin.command: |  
+    echo "{{ domain_admin_password }}" | realm join --verbose  
+    --user="{{ domain_admin_user }}"  
+    --computer-ou="{{ ou_path }}"  
+    {{ domain_name }}  
+  args:  
+    creates: "/etc/sssd/sssd.conf"  
+  register: join_result  
+  changed_when: join_result.rc == 0  
+  failed_when: join_result.rc != 0 and "already in realm" not in join_result.stderr  
+
+- name: Настройка SSSD  
+  ansible.builtin.template:  
+    src: sssd.conf.j2  
+    dest: /etc/sssd/sssd.conf  
+    mode: 0600  
+  notify: Restart SSSD  
+
+- name: Запуск SSSD  
+  ansible.builtin.systemd:  
+    name: sssd  
+    state: started  
+    enabled: yes 
+
+- name: Применение пост-настроек  
+  ansible.builtin.include_tasks: linux_postjoin.yml  
+  when: ansible_facts['os_family'] != 'Windows'   

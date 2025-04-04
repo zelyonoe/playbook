@@ -1,0 +1,5 @@
+- name: Определяем ОС и включаем соответствующий таск  
+  ansible.builtin.include_tasks: "{{ ansible_facts['os_family'] }}.yml"  
+  when:  
+    - ansible_facts['os_family'] in ['Debian', 'RedHat', 'Windows']  
+  ignore_errors: no  

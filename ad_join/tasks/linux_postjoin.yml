@@ -1,0 +1,20 @@
+- name: Настройка chrony (синхронизация времени с DC)  
+  ansible.builtin.template:  
+    src: chrony.conf.j2  
+    dest: /etc/chrony/chrony.conf  
+    mode: 0644  
+  notify: Restart chrony  
+
+- name: Добавление записей в /etc/hosts  
+  ansible.builtin.lineinfile:  
+    path: /etc/hosts  
+    line: "{{ item }}"  
+    state: present  
+  loop: "{{ extra_hosts }}"  
+
+- name: Настройка sudo для группы AD  
+  ansible.builtin.template:  
+    src: sudoers_domain.j2  
+    dest: "{{ sudoers_file }}"  
+    mode: 0440  
+    validate: "/usr/sbin/visudo -cf %s"  

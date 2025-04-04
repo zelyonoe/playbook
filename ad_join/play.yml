@@ -1,0 +1,10 @@
+- name: Присоединение к домену с полной настройкой  
+  hosts: all  
+  roles:  
+    - role: join_domain  
+      vars:  
+        domain_name: "corp.example.com"  
+        domain_admin_user: "admin"  
+        domain_admin_password: "{{ vault_domain_password }}"  
+        ntp_servers: ["dc1.corp.example.com"]  
+        domain_sudoers_group: "linux_admins"  

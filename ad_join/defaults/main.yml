@@ -1,0 +1,26 @@
+# Общие настройки  
+domain_name: "example.com"  
+domain_admin_user: "join_user"  
+domain_admin_password: "{{ vault_domain_password }}"  
+ou_path: "OU=Servers,DC=example,DC=com"  
+
+# Пакеты для Linux (основные)  
+realm_packages:  
+  - realmd  
+  - sssd  
+  - sssd-tools  
+  - libnss-sss  
+  - libpam-sss  
+  - adcli  
+  - samba-common-tools  
+  - krb5-user  
+  - sudo
+  - vim
+  - chrony
+  - curl
+  - wget
+  - net-tools
+  - htop
+# Для Windows  
+win_domain_ou: "OU=Servers,DC=example,DC=com"  
+win_domain_restart: yes  
